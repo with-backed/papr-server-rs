@@ -1,0 +1,1 @@
+generate-papr-schema :; get-graphql-schema $${PAPR_SUBGRAPH_URL} > ./src/papr_subgraph/graphql/paprSchema.graphql

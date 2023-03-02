@@ -1,0 +1,7 @@
+query AllowedCollateralForControllers($controllers: [ID!]) {
+    allowedCollaterals(where: {controller_in: $controllers}) {
+        token {
+            id
+        }
+    }
+}
