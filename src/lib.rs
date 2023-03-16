@@ -24,7 +24,9 @@ pub fn add_twabs(conn: &mut PgConnection, oracle_responses: &Vec<OracleResponse>
     let mut n: Vec<NewTwab> = Vec::new();
     for res in oracle_responses {
         n.push(NewTwab {
-            id: &res.message.id,
+            token_address: &res.message.id,
+            // TODO: figure out how to get currency address
+            currency_address: &"",
             // I don't love this cast, but postgres doesn't support unsigned ints
             timestamp: res.message.timestamp as i64,
             price: res.price,
