@@ -30,8 +30,6 @@ async fn main() -> Result<(), eyre::Error> {
                 Some(60 * 60 * 24 * 7),
             )
             .await?;
-        println!("collection: {}", a.token.id);
-        println!("max bid: {}", res.price);
         oracle_responses.push(res);
     }
     add_twabs(&mut connection, &oracle_responses)?;
