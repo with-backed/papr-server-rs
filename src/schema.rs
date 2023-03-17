@@ -5,7 +5,7 @@ diesel::table! {
         id -> Int4,
         currency_address -> Bpchar,
         token_address -> Bpchar,
-        updated -> Timestamp,
+        created_at -> Timestamp,
         price -> Float8,
     }
 }

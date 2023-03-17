@@ -6,7 +6,7 @@ pub struct Twab {
     pub id: i32,
     pub currency_address: String,
     pub token_address: String,
-    pub updated: chrono::NaiveDateTime,
+    pub created_at: chrono::NaiveDateTime,
     pub price: f64,
 }
 
@@ -16,6 +16,6 @@ pub struct Twab {
 pub struct NewTwab<'a> {
     pub currency_address: &'a str,
     pub token_address: &'a str,
-    pub updated: chrono::NaiveDateTime,
+    pub created_at: chrono::NaiveDateTime,
     pub price: f64,
 }
