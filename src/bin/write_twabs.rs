@@ -25,6 +25,7 @@ async fn main() -> Result<(), eyre::Error> {
             .max_collection_bid(
                 &a.token.id,
                 oracle::PriceKind::Twap,
+                // 40 chars zero address
                 None,
                 Some(60 * 60 * 24 * 7),
             )
@@ -33,7 +34,6 @@ async fn main() -> Result<(), eyre::Error> {
         println!("max bid: {}", res.price);
         oracle_responses.push(res);
     }
-    add_twabs(&mut connection, &oracle_responses);
-    // TODO: write results to postgres DB
+    add_twabs(&mut connection, &oracle_responses)?;
     Ok(())
 }

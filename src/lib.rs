@@ -19,7 +19,7 @@ pub fn establish_connection() -> PgConnection {
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 
-pub fn add_twabs(conn: &mut PgConnection, oracle_responses: &Vec<OracleResponse>) -> Vec<Twab> {
+pub fn add_twabs(conn: &mut PgConnection, oracle_responses: &Vec<OracleResponse>) -> Result<Vec<Twab>, eyre::Error> {
     use crate::schema::twabs;
 
     let mut n: Vec<NewTwab> = Vec::new();
@@ -28,17 +28,17 @@ pub fn add_twabs(conn: &mut PgConnection, oracle_responses: &Vec<OracleResponse>
             token_address: &res.message.id,
             // TODO: figure out how to get currency address
             currency_address: &"",
-            updated: NaiveDateTime::from_timestamp_opt(
+            created_at: NaiveDateTime::from_timestamp_opt(
                 res.message.timestamp.try_into().unwrap(),
                 0,
             )
-            .unwrap(),
+            .ok_or(eyre::eyre!("Timestamp {} out of range", res.message.timestamp))?,
             price: res.price,
         });
     }
 
-    diesel::insert_into(twabs::table)
+    Ok(diesel::insert_into(twabs::table)
         .values(&n)
         .get_results(conn)
-        .expect("Error saving new twabs")
+        .expect("Error saving new twabs"))
 }
