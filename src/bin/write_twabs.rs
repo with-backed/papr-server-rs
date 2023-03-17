@@ -1,13 +1,15 @@
+use chrono::NaiveDateTime;
 use once_cell::sync::Lazy;
-use papr_server_rs::{add_twabs, establish_connection, papr_subgraph};
+use papr_server_rs::{add_twabs, establish_connection, models::NewTwab, papr_subgraph};
 use reservoir_nft::{
     client,
-    oracle::{self, OracleResponse},
+    oracle::{self},
 };
 use std::env;
 
 static RESERVOIR_API_KEY: Lazy<String> =
     Lazy::new(|| env::var("RESERVOIR_API_KEY").expect("RESERVOIR_API_KEY not set"));
+static ETHEREUM_ZERO_ADDRESS: &str = "0x0000000000000000000000000000000000000000";
 
 #[tokio::main]
 async fn main() -> Result<(), eyre::Error> {
@@ -18,20 +20,33 @@ async fn main() -> Result<(), eyre::Error> {
     let result = papr_subgraph::client::Client::default()
         .allowed_collateral_for_controllers(controllers)
         .await?;
-    let mut oracle_responses: Vec<OracleResponse> = Vec::new();
+    let mut twabs: Vec<NewTwab> = Vec::new();
     for a in result {
         // get 7 day twap max bad
         let res = reservoir_client
             .max_collection_bid(
                 &a.token.id,
                 oracle::PriceKind::Twap,
-                // 40 chars zero address
                 None,
                 Some(60 * 60 * 24 * 7),
             )
             .await?;
-        oracle_responses.push(res);
+        // borrow checker 🤷‍♂️
+        let token_address: String = a.token.id;
+        twabs.push(NewTwab {
+            token_address: token_address,
+            currency_address: ETHEREUM_ZERO_ADDRESS.to_string(),
+            created_at: NaiveDateTime::from_timestamp_opt(
+                res.message.timestamp.try_into().unwrap(),
+                0,
+            )
+            .ok_or(eyre::eyre!(
+                "Timestamp {} out of range",
+                res.message.timestamp
+            ))?,
+            price: res.price,
+        });
     }
-    add_twabs(&mut connection, &oracle_responses)?;
+    add_twabs(&mut connection, &twabs);
     Ok(())
 }

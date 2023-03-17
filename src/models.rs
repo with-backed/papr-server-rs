@@ -13,9 +13,9 @@ pub struct Twab {
 
 #[derive(Insertable)]
 #[diesel(table_name = twabs)]
-pub struct NewTwab<'a> {
-    pub currency_address: &'a str,
-    pub token_address: &'a str,
+pub struct NewTwab {
+    pub currency_address: String,
+    pub token_address: String,
     pub created_at: chrono::NaiveDateTime,
     pub price: f64,
 }

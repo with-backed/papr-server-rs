@@ -4,11 +4,9 @@ pub mod papr_subgraph;
 pub mod schema;
 
 use self::models::{NewTwab, Twab};
-use chrono::NaiveDateTime;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use dotenvy::dotenv;
-use reservoir_nft::oracle::OracleResponse;
 use std::env;
 
 pub fn establish_connection() -> PgConnection {
@@ -19,26 +17,11 @@ pub fn establish_connection() -> PgConnection {
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 
-pub fn add_twabs(conn: &mut PgConnection, oracle_responses: &Vec<OracleResponse>) -> Result<Vec<Twab>, eyre::Error> {
+pub fn add_twabs(conn: &mut PgConnection, twabs: &Vec<NewTwab>) -> Vec<Twab> {
     use crate::schema::twabs;
 
-    let mut n: Vec<NewTwab> = Vec::new();
-    for res in oracle_responses {
-        n.push(NewTwab {
-            token_address: &res.message.id,
-            // TODO: figure out how to get currency address
-            currency_address: &"",
-            created_at: NaiveDateTime::from_timestamp_opt(
-                res.message.timestamp.try_into().unwrap(),
-                0,
-            )
-            .ok_or(eyre::eyre!("Timestamp {} out of range", res.message.timestamp))?,
-            price: res.price,
-        });
-    }
-
-    Ok(diesel::insert_into(twabs::table)
-        .values(&n)
+    diesel::insert_into(twabs::table)
+        .values(twabs)
         .get_results(conn)
-        .expect("Error saving new twabs"))
+        .expect("Error saving new twabs")
 }
