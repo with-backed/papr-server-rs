@@ -1,3 +1,6 @@
 /target
 
 .env
+
+# hasura config -- contains admin secret
+config.yaml
