@@ -1,0 +1,1 @@
+CREATE TABLE "public"."twabs" ("id" serial NOT NULL, "currency_address" char(42) NOT NULL, "token_address" char(42) NOT NULL, "created_at" timestamptz NOT NULL, "price" float8 NOT NULL, PRIMARY KEY ("id") , UNIQUE ("id"));
