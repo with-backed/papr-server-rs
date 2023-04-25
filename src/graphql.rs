@@ -4,14 +4,14 @@ use serde::Serialize;
 
 pub struct Client {
     client: reqwest::Client,
-    url: String
+    url: String,
 }
 
 impl Client {
     pub fn new(url: String) -> Self {
         Self {
             client: reqwest::Client::new(),
-            url: url
+            url: url,
         }
     }
 }
@@ -21,7 +21,12 @@ impl Client {
         &self,
         query: QueryBody<V>,
     ) -> Result<D, eyre::Error> {
-        let response = self.client.post(self.url.clone()).json(&query).send().await?;
+        let response = self
+            .client
+            .post(self.url.clone())
+            .json(&query)
+            .send()
+            .await?;
         let body: Response<D> = response.json().await?;
         body.data
             .ok_or(eyre::eyre!("missing response data for query"))

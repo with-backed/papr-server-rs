@@ -1,4 +1,4 @@
-use crate::schema::twabs;
+use crate::database::schema::twabs;
 use diesel::prelude::*;
 
 #[derive(Queryable)]
@@ -9,7 +9,6 @@ pub struct Twab {
     pub created_at: chrono::NaiveDateTime,
     pub price: f64,
 }
-
 
 #[derive(Insertable)]
 #[diesel(table_name = twabs)]

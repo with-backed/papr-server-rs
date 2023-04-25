@@ -1,8 +1,8 @@
 use crate::graphql;
-use graphql_client::{QueryBody};
+use graphql_client::QueryBody;
+use once_cell::sync::Lazy;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-use once_cell::sync::Lazy;
 use std::env;
 
 static SUBGRAPH_URL: Lazy<String> =
@@ -10,7 +10,6 @@ static SUBGRAPH_URL: Lazy<String> =
 pub struct Client {
     client: graphql::Client,
 }
-
 
 impl Default for Client {
     fn default() -> Self {
