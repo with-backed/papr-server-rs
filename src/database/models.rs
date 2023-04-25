@@ -10,7 +10,6 @@ pub struct Twab {
     pub price: f64,
 }
 
-
 #[derive(Insertable)]
 #[diesel(table_name = twabs)]
 pub struct NewTwab {
