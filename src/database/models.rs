@@ -1,4 +1,4 @@
-use crate::schema::twabs;
+use crate::database::schema::twabs;
 use diesel::prelude::*;
 
 #[derive(Queryable)]
