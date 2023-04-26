@@ -16,7 +16,7 @@ pub struct NFTInfo {
     pub token_count: String,
     pub top_collection_bid: f64,
     pub seven_day_twab: f64,
-    pub bids_above_seven_day_twab: i64,
+    pub bids_above_half_seven_day_twab: i64,
     pub volume: reservoir_nft::collections::VolumeStats,
 }
 
@@ -55,7 +55,7 @@ pub async fn all(collection: &str) -> Result<NFTInfo, eyre::Error> {
         token_count: reservoir_info.token_count,
         top_collection_bid: 0.0,
         seven_day_twab: twab.price,
-        bids_above_seven_day_twab: 0,
+        bids_above_half_seven_day_twab: 0,
         volume: reservoir_info.volume,
     };
 
@@ -68,10 +68,10 @@ pub async fn all(collection: &str) -> Result<NFTInfo, eyre::Error> {
     }
 
     info.top_collection_bid = depth_response.depth.first().unwrap().price;
-    info.bids_above_seven_day_twab = depth_response
+    info.bids_above_half_seven_day_twab = depth_response
         .depth
         .iter()
-        .filter(|x| x.price > twab.price)
+        .filter(|x| x.price > (twab.price / 2.0))
         .map(|x| x.quantity)
         .sum();
 
