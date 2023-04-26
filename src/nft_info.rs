@@ -72,7 +72,8 @@ pub async fn all(collection: &str) -> Result<NFTInfo, eyre::Error> {
         .depth
         .iter()
         .filter(|x| x.price > twab.price)
-        .count() as i64;
+        .map(|x| x.quantity)
+        .sum();
 
     Ok(info)
 }
