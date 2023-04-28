@@ -27,7 +27,8 @@ COPY --from=builder /app/target/release/api /app/api
 # Expose the port
 EXPOSE 8000
 
-# Set the environment variable for Rocket to run on port 8000
+# Set the environment variables for Rocket
+ENV ROCKET_ADDRESS=0.0.0.0
 ENV ROCKET_PORT=8000
 
 # Start the application
