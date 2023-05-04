@@ -2359,6 +2359,7 @@ checksum = "3ea8c51b5dc1d8e5fd3350ec8167f464ec0995e79f2e90a075b63371500d557f"
 dependencies = [
  "combine 4.6.6",
  "itoa",
+ "native-tls",
  "percent-encoding",
  "ryu",
  "sha1_smol",
