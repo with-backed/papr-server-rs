@@ -50,7 +50,7 @@ pub async fn cache_oracle_values(controller: &str) -> Result<(), eyre::Error> {
             .max_collection_bid(
                 &a.token.id,
                 oracle::PriceKind::Lower,
-                None,
+                Some("0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6"),
                 Some(SEVEN_DAYS_SECONDS),
             )
             .await?;
