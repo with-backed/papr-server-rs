@@ -41,16 +41,17 @@ pub fn get_cached_oracle_infos(controller: &str) -> Result<Vec<OracleInfo>, eyre
 
 pub async fn cache_oracle_values(controller: &str) -> Result<(), eyre::Error> {
     let reservoir_client = reservoir::client();
-    let allowed_collateral = papr_subgraph::client::Client::default()
-        .allowed_collateral_for_controllers(vec![controller.to_string()])
-        .await?;
+    let papr_controller = papr_subgraph::client::Client::default()
+        .controller_by_id(controller.to_string())
+        .await?
+        .ok_or(eyre::eyre!("controller not found in subgraph"))?;
     let mut infos = Vec::new();
-    for a in allowed_collateral {
+    for a in papr_controller.allowed_collateral.iter() {
         let lower = reservoir_client
             .max_collection_bid(
                 &a.token.id,
                 oracle::PriceKind::Lower,
-                Some("0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6"),
+                Some(&papr_controller.underlying.id),
                 Some(SEVEN_DAYS_SECONDS),
             )
             .await?;
@@ -63,7 +64,7 @@ pub async fn cache_oracle_values(controller: &str) -> Result<(), eyre::Error> {
             )
             .await?;
         infos.push(OracleInfo {
-            collection: a.token.id,
+            collection: a.token.id.clone(),
             lower,
             twab,
         });
