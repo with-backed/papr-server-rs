@@ -4,7 +4,7 @@ use graphql_client::GraphQLQuery;
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "src/papr_subgraph/graphql/paprSchema.graphql",
-    query_path = "src/papr_subgraph/graphql/allowedCollateralForControllers.graphql"
+    query_path = "src/papr_subgraph/graphql/allowed_collateral.graphql"
 )]
 pub struct AllowedCollateralForControllers;
 

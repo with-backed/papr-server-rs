@@ -1,0 +1,13 @@
+query ControllerById($id: ID!) {
+  paprController(id: $id) {
+    id,
+    underlying {
+        id
+    },
+    allowedCollateral {
+      token {
+        id
+      }
+    }
+  }
+}
